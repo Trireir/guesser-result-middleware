@@ -1,0 +1,8 @@
+{
+  "extends": "airbnb",
+  "rules": {
+    "jsx-a11y/anchor-is-valid": "off",
+    "import/no-named-as-default-member": "off",
+    "object-curly-newline": "off"
+  }
+}
