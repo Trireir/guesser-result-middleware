@@ -36,7 +36,11 @@ function getOperation (req) {
   let operation = '';
   switch (req.method) {
     case 'GET':
-      operation = 'get';
+      if(req.params.id) {
+        operation = 'get';
+      } else {
+        operation = 'list';
+      }
       break;
     case 'POST':
       if(req.params.id) {
