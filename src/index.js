@@ -74,6 +74,12 @@ app.all('/api/:controller/:id*?', (req, res) => {
   });
 });
 
+app.all('*', (req, res) => {
+  return res.status(400).json({
+    message: 'Operation not valid.',
+  })
+});
+
 app.listen(process.env.PORT || 3333, function () {
   console.log(`Listening on ${process.env.PORT || 3333} port`);
 });
