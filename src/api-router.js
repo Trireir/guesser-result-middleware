@@ -60,13 +60,20 @@ function getOperation (req) {
   return operation;
 }
 
-app.all('/api/:controller/:id*?', (req, res) => {
+app.all('/api/:controller/:id*?', (req, res, next) => {
   const controller = req.params.controller;
   if (Controllers[controller]) {
     const operation = getOperation(req);
     const data = getData(req);
     if (Controllers[controller][operation]) {
-      return Controllers[controller][operation](data, res);
+      return Controllers[controller][operation](data)
+      .then((result) => {
+        res.status(200).json(result);
+      }).catch((err) => {
+        const status = err.status || 500;
+        delete err.status;
+        res.status(status).json(err);
+      });
     }
   }
   return res.status(400).json({
