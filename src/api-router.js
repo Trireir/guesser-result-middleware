@@ -2,36 +2,12 @@ import express from 'express';
 import cors from 'cors';
 
 import Controllers from './controller';
-import AxiosHALO from './services/axios/halo-api';
-import pathnames from './pathnames';
 
 var bodyParser = require('body-parser')
 
 const app = express()
 app.use(cors({ origin: '*' }))
 app.use(bodyParser.json())
-app.use(async function (req, res, next) {
-  const authToken = process.env.AUTH_TOKEN;
-  const authTokenExpiration = process.env.AUTH_TOKEN_EXPIRATION;
-  if(!authToken || new Date() > authTokenExpiration) {
-    try {
-      const res = await AxiosHALO.post(pathnames.getToken(), {
-        username: process.env.HALO_USERNAME,
-        password: process.env.HALO_PASSWORD,
-        grant_type: 'password',
-      });
-  
-      process.env.AUTH_TOKEN = res.data.access_token;
-      process.env.AUTH_TOKEN_EXPIRATION = new Date().getTime() + res.data.expires_in;
-    } catch (err) {
-      res.status(401).json({
-        message: 'HALO Credentials not valid',
-        extra: err
-      });
-    }
-  }
-  next();
-});
 
 function getData (req) {
   let data = {};
