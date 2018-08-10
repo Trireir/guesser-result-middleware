@@ -3,27 +3,27 @@ import cors from 'cors';
 
 import Controllers from './controller';
 
-var bodyParser = require('body-parser')
+const bodyParser = require('body-parser')
 
-const app = express()
-app.use(cors({ origin: '*' }))
-app.use(bodyParser.json())
+const app = express();
+app.use(cors({ origin: '*' }));
+app.use(bodyParser.json());
 
-function getData (req) {
+function getData(req) {
   let data = {};
-  if(req.query) {
+  if (req.query) {
     data = {
       ...data,
       ...req.query,
     };
   }
-  if(req.body) {
+  if (req.body) {
     data = {
       ...data,
       ...req.body,
     };
   }
-  if(req.params) {
+  if (req.params) {
     data = {
       ...data,
       ...req.params,
@@ -32,18 +32,18 @@ function getData (req) {
   return data;
 }
 
-function getOperation (req) {
+function getOperation(req) {
   let operation = '';
   switch (req.method) {
     case 'GET':
-      if(req.params.id) {
+      if (req.params.id) {
         operation = 'get';
       } else {
         operation = 'list';
       }
       break;
     case 'POST':
-      if(req.params.id) {
+      if (req.params.id) {
         operation = 'update';
       } else {
         operation = 'create';
@@ -55,25 +55,28 @@ function getOperation (req) {
     case 'DELETE':
       operation = 'delete';
       break;
+    default:
+      operation = null;
   }
 
   return operation;
 }
 
-app.all('/api/:controller/:id*?', (req, res, next) => {
-  const controller = req.params.controller;
+app.all('/api/:controller/:id*?', (req, res) => {
+  const { controller } = req.params;
   if (Controllers[controller]) {
     const operation = getOperation(req);
     const data = getData(req);
     if (Controllers[controller][operation]) {
       return Controllers[controller][operation](data)
-      .then((result) => {
-        res.status(200).json(result);
-      }).catch((err) => {
-        const status = err.status || 500;
-        delete err.status;
-        res.status(status).json(err);
-      });
+        .then((result) => {
+          res.status(200).json(result);
+        }).catch((err) => {
+          const newError = _.cloneDeep(err);
+          const status = newError.status || 500;
+          delete newError.status;
+          res.status(status).json(newError);
+        });
     }
   }
   return res.status(400).json({
@@ -81,12 +84,12 @@ app.all('/api/:controller/:id*?', (req, res, next) => {
   });
 });
 
-app.all('*', (req, res) => {
-  return res.status(400).json({
+app.all('*', (req, res) => (
+  res.status(400).json({
     message: 'Operation not valid.',
   })
-});
+));
 
-app.listen(process.env.PORT || 3333, function () {
+app.listen(process.env.PORT || 3333, () => {
   console.log(`Listening on ${process.env.PORT || 3333} port`);
 });

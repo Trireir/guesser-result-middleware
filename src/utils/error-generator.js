@@ -1,10 +1,10 @@
 
-function createError (status, message, extra = {}) {
+function createError(status, message, extra = {}) {
   return {
     status,
     message,
-    extra
+    extra,
   };
-};
+}
 
 export default createError;

@@ -10,22 +10,22 @@ const LeagueRepository = {
 
     return {
       apiId: `${id}`,
-      name: `${name} ${startYear}/${endYear}`
+      name: `${name} ${startYear}/${endYear}`,
     };
   },
   async getLeague(apiId) {
     const filter = {
       searchValues: {
-        property: "apiId",
-        operation: "in",
+        property: 'apiId',
+        operation: 'in',
         value: [apiId],
-        type: "string"
+        type: 'string',
       },
       metaSearch: {
-        property: "deletedAt",
-        operation: "=",
+        property: 'deletedAt',
+        operation: '=',
         value: null,
-        type: "null"
+        type: 'null',
       },
     };
 
@@ -35,7 +35,7 @@ const LeagueRepository = {
     const { name, ...values } = data;
     const leagueResponse = await saveItems(name, process.env.HALO_MODULE_LEAGUE, values);
     return leagueResponse;
-  }
+  },
 };
 
 export default LeagueRepository;

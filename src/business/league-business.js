@@ -11,7 +11,7 @@ const LeagueBusiness = {
     let leagueInfo;
     try {
       leagueInfo = await LeagueRepository.getAPILeague(data);
-    } catch(err) {
+    } catch (err) {
       return Promise.reject(createError(404, 'League do not exist or is restricted', err));
     }
     const leagueAlreadySaved = await isLeagueAlreadySaved(leagueInfo.apiId);
@@ -19,7 +19,7 @@ const LeagueBusiness = {
       return Promise.reject(createError(400, 'League already imported'));
     }
     return LeagueRepository.saveLeague(leagueInfo);
-  }
+  },
 };
 
 export default LeagueBusiness;
