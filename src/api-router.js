@@ -1,9 +1,9 @@
 import express from 'express';
 import cors from 'cors';
-
+import _ from 'lodash';
 import Controllers from './controller';
 
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
 
 const app = express();
 app.use(cors({ origin: '*' }));
@@ -91,5 +91,5 @@ app.all('*', (req, res) => (
 ));
 
 app.listen(process.env.PORT || 3333, () => {
-  console.log(`Listening on ${process.env.PORT || 3333} port`);
+  console.log(`Listening on ${process.env.PORT || 3333} port`); //eslint-disable-line
 });

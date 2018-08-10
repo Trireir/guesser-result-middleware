@@ -14,9 +14,9 @@ InfoAxios.interceptors.response.use(
   err => (Promise.reject(err.data)),
 );
 
-export const getLeagueInfo = (leagueId) => {
-  return InfoAxios.get(pathnames.getLeague(leagueId));
-};
+export const getLeagueInfo = leagueId => (
+  InfoAxios.get(pathnames.getLeague(leagueId))
+);
 
 export const getLeagueMatches = leagueId => (
   InfoAxios.get(pathnames.getMatches(leagueId))
