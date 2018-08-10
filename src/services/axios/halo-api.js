@@ -1,11 +1,10 @@
 import axios from 'axios';
 import pathnames from '../../pathnames';
-import Axios from 'axios';
 
 let token;
 let expirationDate;
 
-export const getAuthToken = async () => {
+const getAuthToken = async () => {
   if(!token || new Date().getTime() > expirationDate) {
     const res = await AxiosHALO.post(pathnames.getToken(), {
       username: process.env.HALO_USERNAME,
@@ -28,16 +27,18 @@ const AxiosHALO = axios.create({
 });
 
 AxiosHALO.interceptors.response.use(
-  (config) => (config),
+  function (res) {
+    return Promise.resolve(res.data);
+  },
   function (err) {
-    if (err.response.status === 401 && !err.config._retry) {
+    if (err && err.response && err.response.status === 401 && !err.config._retry) {
       const originalRequest = err.config;
       originalRequest._retry = true;
       return AxiosHALO.post(pathnames.getToken(), {
         username: process.env.HALO_USERNAME,
         password: process.env.HALO_PASSWORD,
         grant_type: 'password',
-      }).then(({data}) => {
+      }).then((data) => {
         token = data.access_token;
         expirationDate = new Date().getTime() + data.expires_in;
         AxiosHALO.defaults.headers.common['Authorization'] = 'Bearer ' + token;
@@ -45,7 +46,7 @@ AxiosHALO.interceptors.response.use(
         return AxiosHALO(originalRequest);
       }).catch((err) => ( Promise.reject(err)));
     }
-    return Promise.reject(err);
+    return Promise.reject(err.response.data);
   }
 );
 
