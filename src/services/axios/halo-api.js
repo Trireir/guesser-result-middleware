@@ -50,6 +50,14 @@ AxiosHALO.interceptors.response.use(
   }
 );
 
-export const saveItems = () => {
-  return AxiosHALO.get('generalcontent/instance');
+export const searchItems = async (filter) => {
+  return AxiosHALO.post('generalcontent/instance/search', filter);
+}
+
+export const saveItems = (name, module, values) => {
+  return AxiosHALO.post('generalcontent/instance', {
+    module,
+    name,
+    values,
+  });
 }
